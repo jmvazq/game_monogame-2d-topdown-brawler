@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GameCollect2D
+namespace MyGame
 {
 #if WINDOWS || LINUX
     /// <summary>
@@ -14,7 +14,7 @@ namespace GameCollect2D
         [STAThread]
         static void Main()
         {
-            using (var game = new Game1())
+            using (var game = new MyGame())
                 game.Run();
         }
     }
