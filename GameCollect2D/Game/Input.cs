@@ -10,9 +10,11 @@ namespace GameEngine.Models
 {
     class Input
     {
+        // Default input key set
         public Keys Left = Keys.Left;
         public Keys Right = Keys.Right;
         public Keys Up = Keys.Up;
         public Keys Down = Keys.Down;
+        public Keys Jump = Keys.OemQuestion;
     }
 }

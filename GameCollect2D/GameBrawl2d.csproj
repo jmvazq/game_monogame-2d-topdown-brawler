@@ -43,13 +43,16 @@
   <ItemGroup>
     <Compile Include="Game.cs" />
     <Compile Include="Game\GameEnums.cs" />
+    <Compile Include="Game\GameObject.cs" />
     <Compile Include="Game\Input.cs" />
     <Compile Include="Game\Level.cs" />
     <Compile Include="Game\Player.cs" />
     <Compile Include="Game\SaveFile.cs" />
     <Compile Include="Game\Score.cs" />
+    <Compile Include="Game\ScoreModifier.cs" />
     <Compile Include="Game\Settings.cs" />
     <Compile Include="Game\Sprite.cs" />
+    <Compile Include="Game\Tile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

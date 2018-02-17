@@ -11,7 +11,7 @@ namespace GameEngine.Sprites
 {
     class Sprite
     {
-        protected Texture2D _texture;
+        protected Texture2D texture;
 
         protected Vector2 Velocity;
 
@@ -25,7 +25,7 @@ namespace GameEngine.Sprites
         {
             get
             {
-                return _texture.Width;
+                return texture.Width;
             }
         }
 
@@ -33,7 +33,7 @@ namespace GameEngine.Sprites
         {
             get
             {
-                return _texture.Height;
+                return texture.Height;
             }
         }
 
@@ -42,32 +42,36 @@ namespace GameEngine.Sprites
                 return new Rectangle(
                     (int)Position.X, 
                     (int)Position.Y, 
-                    _texture.Width, 
-                    _texture.Height);
+                    texture.Width, 
+                    texture.Height);
             }
         }
 
         #region Constructors
         public Sprite(Texture2D texture)
         {
-            _texture = texture;
+            this.texture = texture;
         }
 
         public Sprite(GraphicsDevice graphicsDevice, int width, int height, Color color)
         {
-            _texture = this.CreateTexture(graphicsDevice, width, height, pixel => color);
+            texture = this.CreateTexture(graphicsDevice, width, height, pixel => color);
             this.Color = color;
         }
         #endregion
 
         public virtual void Update(GameTime gameTime, List<Sprite> sprites)
         {
-            
+        }
+
+        public virtual void Update(Viewport viewport, GameTime gameTime, Level level, List<Sprite> sprites)
+        {
+            this.Update(gameTime, sprites);
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, Position, Color);
+            spriteBatch.Draw(texture, Position, Color);
         }
 
         #region Movement
@@ -97,10 +101,6 @@ namespace GameEngine.Sprites
         #endregion
 
         #region Collision
-        protected bool IsCollision(Sprite sprite)
-        {
-            return this.BoundingBox.Intersects(sprite.BoundingBox);
-        }
         protected bool IsTouchingLeft(Sprite sprite)
         {
             return this.BoundingBox.Right + this.Velocity.X > sprite.BoundingBox.Left &&
@@ -108,6 +108,7 @@ namespace GameEngine.Sprites
                 this.BoundingBox.Bottom > sprite.BoundingBox.Top &&
                 this.BoundingBox.Top < sprite.BoundingBox.Bottom;
         }
+
         protected bool IsTouchingRight(Sprite sprite)
         {
             return this.BoundingBox.Left + this.Velocity.X < sprite.BoundingBox.Right &&
@@ -115,6 +116,7 @@ namespace GameEngine.Sprites
                 this.BoundingBox.Bottom > sprite.BoundingBox.Top &&
                 this.BoundingBox.Top < sprite.BoundingBox.Bottom;
         }
+
         protected bool IsTouchingTop(Sprite sprite)
         {
             return this.BoundingBox.Bottom + this.Velocity.Y > sprite.BoundingBox.Top &&
@@ -122,6 +124,7 @@ namespace GameEngine.Sprites
                 this.BoundingBox.Right > sprite.BoundingBox.Left &&
                 this.BoundingBox.Left < sprite.BoundingBox.Right;
         }
+
         protected bool IsTouchingBottom(Sprite sprite)
         {
             return this.BoundingBox.Top + this.Velocity.Y < sprite.BoundingBox.Bottom &&
