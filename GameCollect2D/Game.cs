@@ -8,7 +8,7 @@ using GameEngine.Sprites;
 
 /* IDEAS for the game
  * 
- * 1) Time match (10 seconds)
+ * 1) Time match (x seconds)
  * 2) Hit Score can be accumulated by hitting the other player
  * 3) Get items for bonuses to your score or to use against the other player
  * 3) At the end of the match, player with the highest hit score wins
