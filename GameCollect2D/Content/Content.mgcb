@@ -39,3 +39,45 @@
 /processorParam:TextureFormat=Compressed
 /build:Label.spritefont
 
+#begin sounds/sfx_exit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx_exit.wav
+
+#begin sounds/sfx_hit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx_hit.wav
+
+#begin sounds/sfx_jump.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx_jump.wav
+
+#begin sounds/sfx_pause.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx_pause.wav
+
+#begin sounds/sfx_item_score.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx_item_score.wav
+
+#begin sounds/sfx_item_damage.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx_item_damage.wav
+
+#begin sounds/sfx_item_collect.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/sfx_item_collect.wav
+

@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Input;
 using GameEngine;
 using GameEngine.Models;
@@ -48,6 +51,9 @@ namespace MyGame
 
         List<Sprite> sprites;
 
+        // Sounds
+        Dictionary<string, SoundEffect> sfx = new Dictionary<string, SoundEffect>();
+
         public MyGame()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -85,6 +91,22 @@ namespace MyGame
             // Load textures
             textureSheet = Content.Load<Texture2D>("sprite_textures");
             Rectangle playerTextureR = new Rectangle(0, 0, tileLength, textureSheet.Height);
+            // Load sounds
+            SoundEffect sfxPause = Content.Load<SoundEffect>("sounds/sfx_pause");
+            SoundEffect sfxExit = Content.Load<SoundEffect>("sounds/sfx_exit");
+            SoundEffect sfxHit = Content.Load<SoundEffect>("sounds/sfx_hit");
+            SoundEffect sfxJump = Content.Load<SoundEffect>("sounds/sfx_jump");
+            SoundEffect sfxItemScore = Content.Load<SoundEffect>("sounds/sfx_item_score");
+            SoundEffect sfxItemDamage = Content.Load<SoundEffect>("sounds/sfx_item_damage");
+            SoundEffect sfxItemCollect = Content.Load<SoundEffect>("sounds/sfx_item_collect");
+
+            sfx.Add("pause", sfxPause);
+            sfx.Add("exit", sfxExit);
+            sfx.Add("hit", sfxHit);
+            sfx.Add("jump", sfxJump);
+            sfx.Add("itemscore", sfxItemScore);
+            sfx.Add("itemdamage", sfxItemDamage);
+            sfx.Add("itemcollect", sfxItemCollect);
 
             // Scores
             saveFile = new SaveFile();
@@ -208,9 +230,15 @@ namespace MyGame
             spriteBatch.Begin();
 
             foreach (Sprite sprite in sprites)
+        void PlaySound(string sfxName)
+        {
+            if (this.sfx.Count > 0)
             {
                 sprite.Draw(spriteBatch);
+                SoundEffectInstance sound = sfx[sfxName].CreateInstance();
+                sound.Play();
             }
+        }
 
             score.Draw(this, spriteBatch);
 
@@ -260,6 +288,7 @@ namespace MyGame
             if (this.gameIsRunning)
             {
                 System.Diagnostics.Debug.WriteLine("Time is out!");
+                PlaySound("exit");
                 this.gameIsRunning = false;
                 this.gameOver = true;
                 SaveHighScores();
