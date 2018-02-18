@@ -32,6 +32,8 @@ namespace MyGame
 
         const string gameTitle = "Time Attack! Prototype";
 
+        Vector2 viewScale = Vector2.One;
+
         // Game states
         bool gameIsRunning = false;
         bool gameOver = false;
@@ -95,7 +97,10 @@ namespace MyGame
             // Start fullscreen
             graphics.PreferredBackBufferWidth = 640; // remove later
             graphics.PreferredBackBufferHeight = 480; // remove later
-            graphics.IsFullScreen = false; // set true to default later
+            graphics.IsFullScreen = true; // set true to default later
+
+            this.Window.ClientSizeChanged += new EventHandler<EventArgs>(Window_ClientSizeChanged);
+            this.Window.AllowUserResizing = true;
 
             graphics.ApplyChanges();
 
@@ -399,7 +404,7 @@ namespace MyGame
                 if (this.matchBeginning)
                 {
                     matchBeginTimer += gameTime.ElapsedGameTime.TotalSeconds;
-                }                   
+                }
             }
 
             // Update previous input states
@@ -411,23 +416,20 @@ namespace MyGame
             base.Update(gameTime);
         }
 
+
+        void Window_ClientSizeChanged(object sender, EventArgs e)
+        {
+            //this.Window.ClientBounds
+            viewScale = new Vector2(
+                graphics.PreferredBackBufferWidth,
+                graphics.PreferredBackBufferHeight);
+        }
+
         private void ToggleFullScreen(GamePadState gpState, KeyboardState kbState)
         {
             if ((this.gamePaused || this.gameOver) && !this.gameIsRunning && kbState.IsKeyDown(Keys.F4))
             {
-                if (!graphics.IsFullScreen) {
-                    // Set fullscreen
-                    graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
-                    graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
-                    graphics.IsFullScreen = true;
-                }
-                else
-                {
-                    // Set Windowed
-                    graphics.PreferredBackBufferWidth = 640;
-                    graphics.PreferredBackBufferHeight = 480;
-                    graphics.IsFullScreen = false;
-                }
+                graphics.IsFullScreen = !graphics.IsFullScreen;
                 graphics.ApplyChanges();
             }
         }
@@ -614,7 +616,7 @@ namespace MyGame
             // Game Over / Time Out screen
             if (this.gameOver)
             {
-                spriteBatch.Draw(gameOverScreenTexture, Vector2.Zero, Color.White);
+                spriteBatch.Draw(this.gameOverScreenTexture, Vector2.Zero, null, Color.White, 0, Vector2.Zero, this.viewScale, SpriteEffects.None, 0.1f);
                 Player winner = this.GetMatchWinner();
                 string winMessage = winner == null ? "It's a TIE!" : winner.Name + " WINS!";
                 Color labelColor = winner == null ? Color.Purple : winner.Color;
@@ -624,17 +626,17 @@ namespace MyGame
             // Pause Screen
             if (this.gamePaused && !this.gameIsRunning)
             {
-                spriteBatch.Draw(this.gamePausedScreenTexture, Vector2.Zero, Color.White);
+                spriteBatch.Draw(this.gamePausedScreenTexture, Vector2.Zero, null, Color.White, 0, Vector2.Zero, this.viewScale, SpriteEffects.None, 0.1f);
             }
 
             // Show "BEGIN!" message on screen at beginning of match
             if (this.matchBeginning)
             {
                 if (this.matchBeginTimer <= 2)
-                    spriteBatch.Draw(this.matchBeginScreenTexture1, Vector2.Zero, Color.White);
+                    spriteBatch.Draw(this.matchBeginScreenTexture1, Vector2.Zero, null, Color.White, 0, Vector2.Zero, this.viewScale, SpriteEffects.None, 0.1f);
 
                 if (this.matchBeginTimer > 2 && matchBeginTimer < 3)
-                    spriteBatch.Draw(this.matchBeginScreenTexture2, Vector2.Zero, Color.White);
+                    spriteBatch.Draw(this.matchBeginScreenTexture2, Vector2.Zero, null, Color.White, 0, Vector2.Zero, this.viewScale, SpriteEffects.None, 0.1f);
             }
 
             spriteBatch.End();
