@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
+using MonoGame.Extended.ViewportAdapters;
 using GameEngine;
 using GameEngine.Models;
 using GameEngine.Sprites;
@@ -32,7 +34,8 @@ namespace MyGame
 
         const string gameTitle = "Time Attack! Prototype";
 
-        Vector2 viewScale = Vector2.One;
+        // Cameras
+        private Camera2D camera;
 
         // Game states
         bool gameIsRunning = false;
@@ -94,13 +97,12 @@ namespace MyGame
         {
             graphics = new GraphicsDeviceManager(this);
 
-            // Start fullscreen
-            graphics.PreferredBackBufferWidth = 640; // remove later
-            graphics.PreferredBackBufferHeight = 480; // remove later
-            graphics.IsFullScreen = true; // set true to default later
+            // Start windowed
+            graphics.PreferredBackBufferWidth = 640;
+            graphics.PreferredBackBufferHeight = 480;
+            graphics.IsFullScreen = false;
 
             this.Window.ClientSizeChanged += new EventHandler<EventArgs>(Window_ClientSizeChanged);
-            this.Window.AllowUserResizing = true;
 
             graphics.ApplyChanges();
 
@@ -116,6 +118,9 @@ namespace MyGame
         protected override void Initialize()
         {
             base.Initialize();
+
+            var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 640, 480);
+            camera = new Camera2D(viewportAdapter);
 
             Window.Title = gameTitle;
 
@@ -419,10 +424,18 @@ namespace MyGame
 
         void Window_ClientSizeChanged(object sender, EventArgs e)
         {
-            //this.Window.ClientBounds
-            viewScale = new Vector2(
-                graphics.PreferredBackBufferWidth,
-                graphics.PreferredBackBufferHeight);
+            if (graphics.IsFullScreen)
+            {
+                graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+                graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            }
+            else
+            {
+                graphics.PreferredBackBufferWidth = 640;
+                graphics.PreferredBackBufferHeight = 480;
+            }
+
+            graphics.ApplyChanges();
         }
 
         private void ToggleFullScreen(GamePadState gpState, KeyboardState kbState)
@@ -603,9 +616,10 @@ namespace MyGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Azure);
+            GraphicsDevice.Clear(Color.Black);
 
-            spriteBatch.Begin();
+            var transformMatrix = camera.GetViewMatrix();
+            spriteBatch.Begin(transformMatrix: transformMatrix);
 
             this.level.Draw(spriteBatch);
             score.Draw(this.GraphicsDevice.Viewport, spriteBatch);
@@ -616,7 +630,7 @@ namespace MyGame
             // Game Over / Time Out screen
             if (this.gameOver)
             {
-                spriteBatch.Draw(this.gameOverScreenTexture, Vector2.Zero, null, Color.White, 0, Vector2.Zero, this.viewScale, SpriteEffects.None, 0.1f);
+                spriteBatch.Draw(this.gameOverScreenTexture, Vector2.Zero, Color.White);
                 Player winner = this.GetMatchWinner();
                 string winMessage = winner == null ? "It's a TIE!" : winner.Name + " WINS!";
                 Color labelColor = winner == null ? Color.Purple : winner.Color;
@@ -626,17 +640,17 @@ namespace MyGame
             // Pause Screen
             if (this.gamePaused && !this.gameIsRunning)
             {
-                spriteBatch.Draw(this.gamePausedScreenTexture, Vector2.Zero, null, Color.White, 0, Vector2.Zero, this.viewScale, SpriteEffects.None, 0.1f);
+                spriteBatch.Draw(this.gamePausedScreenTexture, Vector2.Zero, Color.White);
             }
 
             // Show "BEGIN!" message on screen at beginning of match
             if (this.matchBeginning)
             {
                 if (this.matchBeginTimer <= 2)
-                    spriteBatch.Draw(this.matchBeginScreenTexture1, Vector2.Zero, null, Color.White, 0, Vector2.Zero, this.viewScale, SpriteEffects.None, 0.1f);
+                    spriteBatch.Draw(this.matchBeginScreenTexture1, Vector2.Zero, Color.White);
 
                 if (this.matchBeginTimer > 2 && matchBeginTimer < 3)
-                    spriteBatch.Draw(this.matchBeginScreenTexture2, Vector2.Zero, null, Color.White, 0, Vector2.Zero, this.viewScale, SpriteEffects.None, 0.1f);
+                    spriteBatch.Draw(this.matchBeginScreenTexture2, Vector2.Zero, Color.White);
             }
 
             spriteBatch.End();
