@@ -34,8 +34,14 @@ namespace MyGame
 
         const string gameTitle = "Time Attack! Prototype";
 
+        // Window
+        int windowSizeWidth = 1024;
+        int windowSizeHeight = 768;
+
         // Cameras
         private Camera2D camera;
+        int cameraWidth = 640;
+        int cameraHeight = 480;
 
         // Game states
         bool gameIsRunning = false;
@@ -98,8 +104,8 @@ namespace MyGame
             graphics = new GraphicsDeviceManager(this);
 
             // Start windowed
-            graphics.PreferredBackBufferWidth = 640;
-            graphics.PreferredBackBufferHeight = 480;
+            graphics.PreferredBackBufferWidth = windowSizeWidth;
+            graphics.PreferredBackBufferHeight = windowSizeHeight;
             graphics.IsFullScreen = false;
 
             this.Window.ClientSizeChanged += new EventHandler<EventArgs>(Window_ClientSizeChanged);
@@ -119,7 +125,7 @@ namespace MyGame
         {
             base.Initialize();
 
-            var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 640, 480);
+            var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, cameraWidth, cameraHeight);
             camera = new Camera2D(viewportAdapter);
 
             Window.Title = gameTitle;
@@ -247,7 +253,7 @@ namespace MyGame
         private void SetLevel()
         {
             // Set level contents - objects can be interacted with, tiles are only aesthetic... for now
-            level = new Level(emptyTileTexture, GraphicsDevice.Viewport.Width / tileLength, GraphicsDevice.Viewport.Height / tileLength, tileLength);
+            level = new Level(emptyTileTexture, 20, 15, tileLength);
 
             level.FillObjectRange(0, 0, 1, level.Rows, wallTexture, Passability.block);
             level.FillObjectRange(0, 0, level.Columns, 1, wallTexture, Passability.block);
@@ -431,8 +437,8 @@ namespace MyGame
             }
             else
             {
-                graphics.PreferredBackBufferWidth = 640;
-                graphics.PreferredBackBufferHeight = 480;
+                graphics.PreferredBackBufferWidth = windowSizeWidth;
+                graphics.PreferredBackBufferHeight = windowSizeHeight;
             }
 
             graphics.ApplyChanges();
