@@ -27,61 +27,61 @@ namespace MyGame
     /// </summary>
     public class MyGame : Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-        SaveFile saveFile;
-        Random rand = new Random();
+        GraphicsDeviceManager _graphics;
+        SpriteBatch _spriteBatch;
+        SaveFile _saveFile;
+        Random _rand = new Random();
 
-        const string gameTitle = "Time Attack! Prototype";
+        const string _gameTitle = "Time Attack! Prototype";
 
         // Window
-        int windowSizeWidth = 1024;
-        int windowSizeHeight = 768;
+        int _windowSizeWidth = 1024;
+        int _windowSizeHeight = 768;
 
         // Cameras
-        private Camera2D camera;
-        int cameraWidth = 640;
-        int cameraHeight = 480;
+        private Camera2D _camera;
+        int _cameraWidth = 640;
+        int _cameraHeight = 480;
 
         // Game states
-        bool gameIsRunning = false;
-        bool gameOver = false;
-        bool gamePaused = false;
-        bool matchBeginning = false;
+        bool _gameIsRunning = false;
+        bool _gameOver = false;
+        bool _gamePaused = false;
+        bool _matchBeginning = false;
 
         // Input states
-        GamePadState previousGpState;
-        KeyboardState previousKbState;
+        GamePadState _previousGpState;
+        KeyboardState _previousKbState;
 
         // Time tracking - seconds
         // TO DO: refactor this into a class or something later on
-        int maxGameTime = 20;
-        double lastGameTime = 0;
-        double lastTimerUpdate = 0;
-        double lastRespawn = 0;
-        double totalGameTime = 0;
-        double totalIdleTime = 0;
-        double matchBeginTimer = 0;
-        int gameTimer;
+        int _maxGameTime = 20;
+        double _lastGameTime = 0;
+        double _lastTimerUpdate = 0;
+        double _lastRespawn = 0;
+        double _totalGameTime = 0;
+        double _totalIdleTime = 0;
+        double _matchBeginTimer = 0;
+        int _gameTimer;
 
-        int tileLength = 32;
+        int _tileLength = 32;
 
         // Fonts
-        SpriteFont labelFont;
-        SpriteFont scoreFont;
+        SpriteFont _labelFont;
+        SpriteFont _scoreFont;
 
         // Scores
-        bool newHighScore = false;
-        Score score;
-        string[] highScores;
+        bool _newHighScore = false;
+        Score _score;
+        string[] _highScores;
 
         // Game Entities
-        Level level;
-        Player playerOne, playerTwo;
-        List<ScoreModifier> collectables;
+        Level _level;
+        Player _playerOne, _playerTwo;
+        List<ScoreModifier> _collectables;
 
         // Score modifier values
-        int[] scoreModValues = { 1, -1, 1 };
+        int[] _scoreModValues = { 1, -1, 1 };
 
 
         // Textures
@@ -97,20 +97,20 @@ namespace MyGame
 
 
         // Sounds
-        Dictionary<string, SoundEffect> sfx = new Dictionary<string, SoundEffect>();
+        Dictionary<string, SoundEffect> _sfx = new Dictionary<string, SoundEffect>();
 
         public MyGame()
         {
-            graphics = new GraphicsDeviceManager(this);
+            _graphics = new GraphicsDeviceManager(this);
 
             // Start windowed
-            graphics.PreferredBackBufferWidth = windowSizeWidth;
-            graphics.PreferredBackBufferHeight = windowSizeHeight;
-            graphics.IsFullScreen = false;
+            _graphics.PreferredBackBufferWidth = _windowSizeWidth;
+            _graphics.PreferredBackBufferHeight = _windowSizeHeight;
+            _graphics.IsFullScreen = false;
 
             this.Window.ClientSizeChanged += new EventHandler<EventArgs>(Window_ClientSizeChanged);
 
-            graphics.ApplyChanges();
+            _graphics.ApplyChanges();
 
             Content.RootDirectory = "Content";
         }
@@ -125,13 +125,13 @@ namespace MyGame
         {
             base.Initialize();
 
-            var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, cameraWidth, cameraHeight);
-            camera = new Camera2D(viewportAdapter);
+            var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, _cameraWidth, _cameraHeight);
+            _camera = new Camera2D(viewportAdapter);
 
-            Window.Title = gameTitle;
+            Window.Title = _gameTitle;
 
-            this.gameTimer = maxGameTime;
-            this.matchBeginning = true;
+            this._gameTimer = _maxGameTime;
+            this._matchBeginning = true;
         }
 
         /// <summary>
@@ -141,11 +141,11 @@ namespace MyGame
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Load fonts
-            labelFont = Content.Load<SpriteFont>("Label");
-            scoreFont = Content.Load<SpriteFont>("Score");
+            _labelFont = Content.Load<SpriteFont>("Label");
+            _scoreFont = Content.Load<SpriteFont>("Score");
 
             // Load textures
             textureSheet = Content.Load<Texture2D>("sprite_textures");
@@ -163,35 +163,35 @@ namespace MyGame
             SoundEffect sfxItemDamage = Content.Load<SoundEffect>("sounds/sfx_item_damage");
             SoundEffect sfxItemCollect = Content.Load<SoundEffect>("sounds/sfx_item_collect");
 
-            sfx.Add("pause", sfxPause);
-            sfx.Add("exit", sfxExit);
-            sfx.Add("hit", sfxHit);
-            sfx.Add("jump", sfxJump);
-            sfx.Add("itemscore", sfxItemScore);
-            sfx.Add("itemdamage", sfxItemDamage);
-            sfx.Add("itemcollect", sfxItemCollect);
+            _sfx.Add("pause", sfxPause);
+            _sfx.Add("exit", sfxExit);
+            _sfx.Add("hit", sfxHit);
+            _sfx.Add("jump", sfxJump);
+            _sfx.Add("itemscore", sfxItemScore);
+            _sfx.Add("itemdamage", sfxItemDamage);
+            _sfx.Add("itemcollect", sfxItemCollect);
 
             // Scores
-            saveFile = new SaveFile();
+            _saveFile = new SaveFile();
 
-            score = new Score(labelFont, scoreFont);
-            score.LabelColor1 = Color.Red;
-            score.LabelColor2 = Color.Blue;
-            score.ScoreColor1 = Color.Black;
-            score.ScoreColor2 = Color.Black;
+            _score = new Score(_labelFont, _scoreFont);
+            _score.LabelColor1 = Color.Red;
+            _score.LabelColor2 = Color.Blue;
+            _score.ScoreColor1 = Color.Black;
+            _score.ScoreColor2 = Color.Black;
 
             // Load highscores
-            string[] saveData = saveFile.Open();
-            highScores = saveData ?? (new string[] { "0", "0" });
+            string[] saveData = _saveFile.Open();
+            _highScores = saveData ?? (new string[] { "0", "0" });
 
             // Players Setup
-            playerTexture = Sprite.CreateSubTexture(GraphicsDevice, textureSheet, 0, 0, tileLength, textureSheet.Height);
+            playerTexture = Sprite.CreateSubTexture(GraphicsDevice, textureSheet, 0, 0, _tileLength, textureSheet.Height);
             SetupPlayers();
 
             // Level setup
-            emptyTileTexture = Sprite.CreateSubTexture(GraphicsDevice, textureSheet, 140, 0, tileLength, textureSheet.Height);
-            wallTexture = Sprite.CreateSubTexture(GraphicsDevice, textureSheet, 172, 0, tileLength, textureSheet.Height);
-            scoreModTexture = Sprite.CreateSubTexture(GraphicsDevice, textureSheet, 96, 0, tileLength, textureSheet.Height);
+            emptyTileTexture = Sprite.CreateSubTexture(GraphicsDevice, textureSheet, 140, 0, _tileLength, textureSheet.Height);
+            wallTexture = Sprite.CreateSubTexture(GraphicsDevice, textureSheet, 172, 0, _tileLength, textureSheet.Height);
+            scoreModTexture = Sprite.CreateSubTexture(GraphicsDevice, textureSheet, 96, 0, _tileLength, textureSheet.Height);
 
             SetLevel();
 
@@ -214,13 +214,13 @@ namespace MyGame
 
         private void SetupPlayers()
         {
-            float playerSpeed = tileLength * 0.5f;
+            float playerSpeed = _tileLength * 0.5f;
             Dictionary<string, SoundEffect> playerSounds = new Dictionary<string, SoundEffect>() {
-                { "hit", sfx["hit"] },
-                { "jump", sfx["jump"] },
+                { "hit", _sfx["hit"] },
+                { "jump", _sfx["jump"] },
             };
 
-            playerOne = new Player(playerTexture, playerSpeed, playerSounds)
+            _playerOne = new Player(playerTexture, playerSpeed, playerSounds)
             {
                 Name = "Player 1",
                 Input = new Input()
@@ -237,7 +237,7 @@ namespace MyGame
                 Color = Color.Red
             };
 
-            playerTwo = new Player(playerTexture, playerSpeed, playerSounds)
+            _playerTwo = new Player(playerTexture, playerSpeed, playerSounds)
             {
                 Name = "Player 2",
                 Passability = Passability.block,
@@ -253,94 +253,94 @@ namespace MyGame
         private void SetLevel()
         {
             // Set level contents - objects can be interacted with, tiles are only aesthetic... for now
-            level = new Level(emptyTileTexture, 20, 15, tileLength);
+            _level = new Level(emptyTileTexture, 20, 15, _tileLength);
 
-            level.FillObjectRange(0, 0, 1, level.Rows, wallTexture, Passability.block);
-            level.FillObjectRange(0, 0, level.Columns, 1, wallTexture, Passability.block);
-            level.FillObjectRange(level.Columns - 1, 1, level.Columns, level.Rows, wallTexture, Passability.block);
-            level.FillObjectRange(1, level.Rows - 1, level.Columns, level.Rows, wallTexture, Passability.block);
-            level.RemoveObject(0, 5);
-            level.RemoveObject(level.Columns - 1, 5);
+            _level.FillObjectRange(0, 0, 1, _level.Rows, wallTexture, Passability.block);
+            _level.FillObjectRange(0, 0, _level.Columns, 1, wallTexture, Passability.block);
+            _level.FillObjectRange(_level.Columns - 1, 1, _level.Columns, _level.Rows, wallTexture, Passability.block);
+            _level.FillObjectRange(1, _level.Rows - 1, _level.Columns, _level.Rows, wallTexture, Passability.block);
+            _level.RemoveObject(0, 5);
+            _level.RemoveObject(_level.Columns - 1, 5);
 
-            level.FillObjectRange(5, 4, 8, 5, wallTexture, Passability.block);
-            level.FillObjectRange(5, 5, 6, 7, wallTexture, Passability.block);
+            _level.FillObjectRange(5, 4, 8, 5, wallTexture, Passability.block);
+            _level.FillObjectRange(5, 5, 6, 7, wallTexture, Passability.block);
 
-            level.FillObjectRange(12, 10, 15, 11, wallTexture, Passability.block);
-            level.FillObjectRange(14, 8, 15, 11, wallTexture, Passability.block);
+            _level.FillObjectRange(12, 10, 15, 11, wallTexture, Passability.block);
+            _level.FillObjectRange(14, 8, 15, 11, wallTexture, Passability.block);
 
 
-            level.RemoveObject(0, level.Rows - 6);
-            level.RemoveObject(level.Columns - 1, level.Rows - 6);
+            _level.RemoveObject(0, _level.Rows - 6);
+            _level.RemoveObject(_level.Columns - 1, _level.Rows - 6);
         }
 
         private void SetLevelCollectables()
         {
-            if (collectables == null)
+            if (_collectables == null)
             {
-                collectables = new List<ScoreModifier>();
+                _collectables = new List<ScoreModifier>();
             }
 
             // Cleanup first
-            foreach (ScoreModifier collectable in collectables)
+            foreach (ScoreModifier collectable in _collectables)
             {
                 if (!collectable.IsDisplaced)
-                    level.RemoveObject(collectable.Column, collectable.Row);
+                    _level.RemoveObject(collectable.Column, collectable.Row);
             }
 
             // Reposition instances
             Dictionary<String, SoundEffect> sounds = new Dictionary<String, SoundEffect>()
             {
-                { "collect", sfx["itemcollect"] },
-                { "score", sfx["itemscore"] },
-                { "damage", sfx["itemdamage"] }
+                { "collect", _sfx["itemcollect"] },
+                { "score", _sfx["itemscore"] },
+                { "damage", _sfx["itemdamage"] }
             };
 
-            if (collectables.Count < 1)
+            if (_collectables.Count < 1)
             {
-                collectables = new List<ScoreModifier>()
+                _collectables = new List<ScoreModifier>()
                 {
-                    new ScoreModifier(scoreModTexture, scoreModValues[rand.Next(scoreModValues.Length)], sounds),
-                    new ScoreModifier(scoreModTexture, scoreModValues[rand.Next(scoreModValues.Length)], sounds),
-                    new ScoreModifier(scoreModTexture, scoreModValues[rand.Next(scoreModValues.Length)], sounds),
-                    new ScoreModifier(scoreModTexture, scoreModValues[rand.Next(scoreModValues.Length)], sounds),
-                    new ScoreModifier(scoreModTexture, scoreModValues[rand.Next(scoreModValues.Length)], sounds),
-                    new ScoreModifier(scoreModTexture, scoreModValues[rand.Next(scoreModValues.Length)], sounds)
+                    new ScoreModifier(scoreModTexture, _scoreModValues[_rand.Next(_scoreModValues.Length)], sounds),
+                    new ScoreModifier(scoreModTexture, _scoreModValues[_rand.Next(_scoreModValues.Length)], sounds),
+                    new ScoreModifier(scoreModTexture, _scoreModValues[_rand.Next(_scoreModValues.Length)], sounds),
+                    new ScoreModifier(scoreModTexture, _scoreModValues[_rand.Next(_scoreModValues.Length)], sounds),
+                    new ScoreModifier(scoreModTexture, _scoreModValues[_rand.Next(_scoreModValues.Length)], sounds),
+                    new ScoreModifier(scoreModTexture, _scoreModValues[_rand.Next(_scoreModValues.Length)], sounds)
                 };
             }
 
-            foreach (ScoreModifier collectable in collectables)
+            foreach (ScoreModifier collectable in _collectables)
             {
                 Vector2 position = GetRandomLevelPosition();
-                level.SetObject((int)position.X, (int)position.Y, collectable, Passability.passable);
+                _level.SetObject((int)position.X, (int)position.Y, collectable, Passability.passable);
             }
         }
 
         void RespawnCollectables()
         {
-            if (this.lastRespawn < 3f)
+            if (this._lastRespawn < 3f)
                 return;
 
-            foreach (GameObject collectable in collectables)
+            foreach (GameObject collectable in _collectables)
             {
                 if (collectable.IsDisplaced)
                 {
                     // Reposition instances
-                    ((ScoreModifier)collectable).Modifier = scoreModValues[rand.Next(scoreModValues.Length)];
+                    ((ScoreModifier)collectable).Modifier = _scoreModValues[_rand.Next(_scoreModValues.Length)];
                     Vector2 position = GetRandomLevelPosition();
-                    level.SetObject((int)position.X, (int)position.Y, collectable, Passability.passable);
+                    _level.SetObject((int)position.X, (int)position.Y, collectable, Passability.passable);
                     break;
                 }
             }
-            this.lastRespawn = 0;
+            this._lastRespawn = 0;
         }
 
         // TO DO: move to level class
         Vector2 GetRandomLevelPosition()
         {
-            int column = rand.Next(level.Columns);
-            int row = rand.Next(level.Rows);
+            int column = _rand.Next(_level.Columns);
+            int row = _rand.Next(_level.Rows);
 
-            if (level.ObjMap[column, row] != null)
+            if (_level.ObjMap[column, row] != null)
                 return GetRandomLevelPosition();
             else
                 return new Vector2(column, row);
@@ -349,8 +349,8 @@ namespace MyGame
         // TO DO: move to player class
         private void SetPlayerStartPositions()
         {
-            level.SetObject(1, 1, playerOne);
-            level.SetObject(level.Columns - 2, level.Rows - 2, playerTwo);
+            _level.SetObject(1, 1, _playerOne);
+            _level.SetObject(_level.Columns - 2, _level.Rows - 2, _playerTwo);
         }
 
         #endregion
@@ -384,45 +384,45 @@ namespace MyGame
 
             // Update game scores
             // TO DO: I don't like this solution. Refactor scores later.
-            this.score.PlayerOne = playerOne.Score;
-            this.score.PlayerTwo = playerTwo.Score;
+            this._score.PlayerOne = _playerOne.Score;
+            this._score.PlayerTwo = _playerTwo.Score;
 
-            if (this.gameIsRunning)
+            if (this._gameIsRunning)
             {
-                level.Update(GraphicsDevice.Viewport, gameTime, level);
+                _level.Update(this, _camera, GraphicsDevice.Viewport, gameTime, _level);
                 RespawnCollectables();
 
-                this.gameTimer = maxGameTime - (int)(totalGameTime - lastGameTime - totalIdleTime);
-                this.lastTimerUpdate += gameTime.ElapsedGameTime.TotalSeconds;
-                this.lastRespawn += gameTime.ElapsedGameTime.TotalSeconds;
+                this._gameTimer = _maxGameTime - (int)(_totalGameTime - _lastGameTime - _totalIdleTime);
+                this._lastTimerUpdate += gameTime.ElapsedGameTime.TotalSeconds;
+                this._lastRespawn += gameTime.ElapsedGameTime.TotalSeconds;
 
-                if (this.gameTimer <= 0)
+                if (this._gameTimer <= 0)
                 {
                     this.GameOver();
                 }
-                else if (gameTimer <= 5 && lastTimerUpdate >= 1f)
+                else if (_gameTimer <= 5 && _lastTimerUpdate >= 1f)
                 {
-                    lastTimerUpdate = 0;
+                    _lastTimerUpdate = 0;
                     PlaySound("pause");
                 }
             }
             else
             {
-                if (this.gamePaused || this.matchBeginning)
+                if (this._gamePaused || this._matchBeginning)
                 {
-                    totalIdleTime += gameTime.ElapsedGameTime.TotalSeconds;
+                    _totalIdleTime += gameTime.ElapsedGameTime.TotalSeconds;
                 }
-                if (this.matchBeginning)
+                if (this._matchBeginning)
                 {
-                    matchBeginTimer += gameTime.ElapsedGameTime.TotalSeconds;
+                    _matchBeginTimer += gameTime.ElapsedGameTime.TotalSeconds;
                 }
             }
 
             // Update previous input states
-            previousGpState = gpState;
-            previousKbState = kbState;
+            _previousGpState = gpState;
+            _previousKbState = kbState;
 
-            totalGameTime += gameTime.ElapsedGameTime.TotalSeconds;
+            _totalGameTime += gameTime.ElapsedGameTime.TotalSeconds;
 
             base.Update(gameTime);
         }
@@ -430,32 +430,32 @@ namespace MyGame
 
         void Window_ClientSizeChanged(object sender, EventArgs e)
         {
-            if (graphics.IsFullScreen)
+            if (_graphics.IsFullScreen)
             {
-                graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-                graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+                _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+                _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             }
             else
             {
-                graphics.PreferredBackBufferWidth = windowSizeWidth;
-                graphics.PreferredBackBufferHeight = windowSizeHeight;
+                _graphics.PreferredBackBufferWidth = _windowSizeWidth;
+                _graphics.PreferredBackBufferHeight = _windowSizeHeight;
             }
 
-            graphics.ApplyChanges();
+            _graphics.ApplyChanges();
         }
 
         private void ToggleFullScreen(GamePadState gpState, KeyboardState kbState)
         {
-            if ((this.gamePaused || this.gameOver) && !this.gameIsRunning && kbState.IsKeyDown(Keys.F4))
+            if ((this._gamePaused || this._gameOver) && !this._gameIsRunning && kbState.IsKeyDown(Keys.F4))
             {
-                graphics.IsFullScreen = !graphics.IsFullScreen;
-                graphics.ApplyChanges();
+                _graphics.IsFullScreen = !_graphics.IsFullScreen;
+                _graphics.ApplyChanges();
             }
         }
 
         private void ExitGame(GamePadState gpState, KeyboardState kbState)
         {
-            if ((this.gamePaused || this.gameOver) && !this.gameIsRunning && (gpState.Buttons.Back == ButtonState.Pressed || kbState.IsKeyDown(Keys.Escape)))
+            if ((this._gamePaused || this._gameOver) && !this._gameIsRunning && (gpState.Buttons.Back == ButtonState.Pressed || kbState.IsKeyDown(Keys.Escape)))
             {
                 PlaySound("exit");
                 Exit();
@@ -464,9 +464,9 @@ namespace MyGame
 
         void PlaySound(string sfxName)
         {
-            if (this.sfx.Count > 0)
+            if (this._sfx.Count > 0)
             {
-                SoundEffectInstance sound = sfx[sfxName].CreateInstance();
+                SoundEffectInstance sound = _sfx[sfxName].CreateInstance();
                 sound.Play();
             }
         }
@@ -475,17 +475,17 @@ namespace MyGame
 
         protected override void OnDeactivated(object sender, System.EventArgs args)
         {
-            if (!this.gamePaused)
+            if (!this._gamePaused)
                 Pause();
         }
 
         void Pause()
         {
-            if (!this.gameOver && this.gameIsRunning && !this.matchBeginning)
+            if (!this._gameOver && this._gameIsRunning && !this._matchBeginning)
             {
-                Window.Title = "Paused - " + gameTitle;
-                gameIsRunning = false;
-                this.gamePaused = true;
+                Window.Title = "Paused - " + _gameTitle;
+                _gameIsRunning = false;
+                this._gamePaused = true;
                 this.PlaySound("pause");
                 System.Diagnostics.Debug.WriteLine("Game paused");
             }
@@ -493,10 +493,10 @@ namespace MyGame
 
         void Unpause()
         {
-            if (!this.gameOver && !this.gameIsRunning && !this.matchBeginning) {
-                Window.Title = gameTitle;
-                this.gameIsRunning = true;
-                this.gamePaused = false;
+            if (!this._gameOver && !this._gameIsRunning && !this._matchBeginning) {
+                Window.Title = _gameTitle;
+                this._gameIsRunning = true;
+                this._gamePaused = false;
                 this.PlaySound("pause");
                 System.Diagnostics.Debug.WriteLine("Game unpaused");
 
@@ -505,15 +505,15 @@ namespace MyGame
 
         void PauseUnpause(GamePadState gpState, KeyboardState kbState)
         {
-            if (this.gameOver || this.matchBeginning)
+            if (this._gameOver || this._matchBeginning)
             {
                 return;
             }
 
-            if ((gpState.Buttons.Start == ButtonState.Pressed && previousGpState.Buttons.Start != ButtonState.Pressed) ||
-                (kbState.IsKeyDown(Keys.P) && !previousKbState.IsKeyDown(Keys.P)))
+            if ((gpState.Buttons.Start == ButtonState.Pressed && _previousGpState.Buttons.Start != ButtonState.Pressed) ||
+                (kbState.IsKeyDown(Keys.P) && !_previousKbState.IsKeyDown(Keys.P)))
             {
-                if (!this.gamePaused)
+                if (!this._gamePaused)
                 {
                     Pause();
                 }
@@ -528,12 +528,12 @@ namespace MyGame
 
         void BeginMatch()
         {
-            if (this.matchBeginning && !this.gameIsRunning && !this.gamePaused)
+            if (this._matchBeginning && !this._gameIsRunning && !this._gamePaused)
             {
-                if (this.matchBeginTimer > 4)
+                if (this._matchBeginTimer > 4)
                 {
-                    this.gameIsRunning = true;
-                    this.matchBeginning = false;
+                    this._gameIsRunning = true;
+                    this._matchBeginning = false;
                     System.Diagnostics.Debug.WriteLine("BEGIN!");
                 }
             }
@@ -541,79 +541,79 @@ namespace MyGame
 
         void Restart(GamePadState gpState, KeyboardState kbState, double totalSeconds)
         {
-            if ((this.gamePaused || this.gameOver) && (gpState.Buttons.Y == ButtonState.Pressed || kbState.IsKeyDown(Keys.R)))
+            if ((this._gamePaused || this._gameOver) && (gpState.Buttons.Y == ButtonState.Pressed || kbState.IsKeyDown(Keys.R)))
             {
                 System.Diagnostics.Debug.WriteLine("Restarting game...");
 
-                this.lastGameTime = totalSeconds;
-                this.matchBeginTimer = 0;
-                this.totalIdleTime = 0;
+                this._lastGameTime = totalSeconds;
+                this._matchBeginTimer = 0;
+                this._totalIdleTime = 0;
 
                 PlaySound("exit");
 
-                this.gameTimer = maxGameTime;
-                this.gameOver = false;
-                this.newHighScore = false;
+                this._gameTimer = _maxGameTime;
+                this._gameOver = false;
+                this._newHighScore = false;
 
-                this.gameIsRunning = false;
-                this.gamePaused = false;
-                this.matchBeginning = true;
+                this._gameIsRunning = false;
+                this._gamePaused = false;
+                this._matchBeginning = true;
 
-                playerOne.Reset();
-                playerTwo.Reset();
+                _playerOne.Reset();
+                _playerTwo.Reset();
 
                 // Set player positions in level
                 SetPlayerStartPositions();
                 SetLevelCollectables();
 
-                Window.Title = gameTitle;
+                Window.Title = _gameTitle;
             }
         }
 
         void GameOver()
         {
-            if (this.gameIsRunning)
+            if (this._gameIsRunning)
             {
                 System.Diagnostics.Debug.WriteLine("Time is out!");
                 PlaySound("exit");
-                this.gameIsRunning = false;
-                this.gameOver = true;
+                this._gameIsRunning = false;
+                this._gameOver = true;
                 SaveHighScores();
             }
         }
 
         Player GetMatchWinner()
         {
-            if (score.PlayerOne == score.PlayerTwo)
+            if (_score.PlayerOne == _score.PlayerTwo)
             {
                 return null;
             }
-            else if (score.PlayerOne > score.PlayerTwo)
+            else if (_score.PlayerOne > _score.PlayerTwo)
             {
-                return playerOne;
+                return _playerOne;
             }
             else
             {
-                return playerTwo;
+                return _playerTwo;
             }
         }
 
         void SaveHighScores()
         {
-            if (score.PlayerOne > int.Parse(highScores[0]))
+            if (_score.PlayerOne > int.Parse(_highScores[0]))
             {
-                highScores[0] = score.PlayerOne.ToString();
-                newHighScore = true;
+                _highScores[0] = _score.PlayerOne.ToString();
+                _newHighScore = true;
             }
-            if (score.PlayerTwo > int.Parse(highScores[1]))
+            if (_score.PlayerTwo > int.Parse(_highScores[1]))
             {
-                highScores[1] = score.PlayerTwo.ToString();
-                newHighScore = true;
+                _highScores[1] = _score.PlayerTwo.ToString();
+                _newHighScore = true;
             }
 
             // Saving high score for each player..
-            if (saveFile.Write(highScores) && newHighScore)
-                Window.Title = "New High Scores! Saved - " + gameTitle;
+            if (_saveFile.Write(_highScores) && _newHighScore)
+                Window.Title = "New High Scores! Saved - " + _gameTitle;
         }
 
         /// <summary>
@@ -624,42 +624,42 @@ namespace MyGame
         {
             GraphicsDevice.Clear(Color.Black);
 
-            var transformMatrix = camera.GetViewMatrix();
-            spriteBatch.Begin(transformMatrix: transformMatrix);
+            var transformMatrix = _camera.GetViewMatrix();
+            _spriteBatch.Begin(transformMatrix: transformMatrix);
 
-            this.level.Draw(spriteBatch);
-            score.Draw(this.GraphicsDevice.Viewport, spriteBatch);
+            this._level.Draw(_spriteBatch);
+            _score.Draw(this.GraphicsDevice.Viewport, _spriteBatch);
 
             // Draw match timer
-            spriteBatch.DrawString(scoreFont, this.gameTimer.ToString(), new Vector2(10, 10), (this.gameTimer <= 5 ? Color.Red : Color.Black));
+            _spriteBatch.DrawString(_scoreFont, this._gameTimer.ToString(), new Vector2(10, 10), (this._gameTimer <= 5 ? Color.Red : Color.Black));
 
             // Game Over / Time Out screen
-            if (this.gameOver)
+            if (this._gameOver)
             {
-                spriteBatch.Draw(this.gameOverScreenTexture, Vector2.Zero, Color.White);
+                _spriteBatch.Draw(this.gameOverScreenTexture, Vector2.Zero, Color.White);
                 Player winner = this.GetMatchWinner();
                 string winMessage = winner == null ? "It's a TIE!" : winner.Name + " WINS!";
                 Color labelColor = winner == null ? Color.Purple : winner.Color;
-                spriteBatch.DrawString(labelFont, winMessage, new Vector2(this.Window.ClientBounds.Width - 150, 10), labelColor);
+                _spriteBatch.DrawString(_labelFont, winMessage, new Vector2(this.Window.ClientBounds.Width - 150, 10), labelColor);
             }
 
             // Pause Screen
-            if (this.gamePaused && !this.gameIsRunning)
+            if (this._gamePaused && !this._gameIsRunning)
             {
-                spriteBatch.Draw(this.gamePausedScreenTexture, Vector2.Zero, Color.White);
+                _spriteBatch.Draw(this.gamePausedScreenTexture, Vector2.Zero, Color.White);
             }
 
             // Show "BEGIN!" message on screen at beginning of match
-            if (this.matchBeginning)
+            if (this._matchBeginning)
             {
-                if (this.matchBeginTimer <= 2)
-                    spriteBatch.Draw(this.matchBeginScreenTexture1, Vector2.Zero, Color.White);
+                if (this._matchBeginTimer <= 2)
+                    _spriteBatch.Draw(this.matchBeginScreenTexture1, Vector2.Zero, Color.White);
 
-                if (this.matchBeginTimer > 2 && matchBeginTimer < 3)
-                    spriteBatch.Draw(this.matchBeginScreenTexture2, Vector2.Zero, Color.White);
+                if (this._matchBeginTimer > 2 && _matchBeginTimer < 3)
+                    _spriteBatch.Draw(this.matchBeginScreenTexture2, Vector2.Zero, Color.White);
             }
 
-            spriteBatch.End();
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }

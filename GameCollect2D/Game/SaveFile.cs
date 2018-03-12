@@ -14,21 +14,21 @@ namespace GameEngine
          * Save file in Documents/Collect2D/scores.dat
          * 
          */
-        string dirName;
-        string fileName;
-        string filePath;
+        string _dirName;
+        string _fileName;
+        string _filePath;
 
         public SaveFile()
         {
-            dirName = "My Games";
-            fileName = "TimeAttack.sav";
+            _dirName = "My Games";
+            _fileName = "TimeAttack.sav";
 
             // Create game savedata directory if it doesn't exist
-            if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + dirName))
+            if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + _dirName))
             {
                 try
                 {
-                    Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + dirName);
+                    Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + _dirName);
                 }
                 catch (Exception e)
                 {
@@ -36,20 +36,20 @@ namespace GameEngine
                 }
             }
 
-            this.filePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + this.dirName + "\\" + this.fileName;
+            this._filePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + this._dirName + "\\" + this._fileName;
         }
 
         public SaveFile(string dirName, string fileName) : this()
         {
-            this.dirName = dirName;
-            this.fileName = fileName;
+            this._dirName = dirName;
+            this._fileName = fileName;
         }
 
         public string[] Open()
         {
             try
             {
-                string[] data = File.ReadAllLines(filePath);
+                string[] data = File.ReadAllLines(_filePath);
 
                 return data;
             }
@@ -64,7 +64,7 @@ namespace GameEngine
         {
             try
             {
-                File.WriteAllLines(filePath, data);
+                File.WriteAllLines(_filePath, data);
                 return true;
             }
             catch (Exception e)

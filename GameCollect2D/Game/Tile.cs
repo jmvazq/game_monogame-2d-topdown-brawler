@@ -10,8 +10,8 @@ namespace GameEngine.Sprites
 {
     class Tile : Sprite
     {
-        double lastUpdateTime;
-        double updateTimer;
+        double _lastUpdateTime;
+        double _updateTimer;
 
         public enum State
         {

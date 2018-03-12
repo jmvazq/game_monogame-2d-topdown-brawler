@@ -11,9 +11,9 @@ namespace GameEngine.Sprites
 {
     class Sprite
     {
-        protected Texture2D texture;
+        protected Texture2D _texture;
 
-        protected Vector2 Velocity;
+        protected Vector2 _velocity;
 
         public Passability Passability = Passability.passable;
         public Input Input;
@@ -25,7 +25,7 @@ namespace GameEngine.Sprites
         {
             get
             {
-                return texture.Width;
+                return _texture.Width;
             }
         }
 
@@ -33,7 +33,7 @@ namespace GameEngine.Sprites
         {
             get
             {
-                return texture.Height;
+                return _texture.Height;
             }
         }
 
@@ -42,20 +42,20 @@ namespace GameEngine.Sprites
                 return new Rectangle(
                     (int)Position.X, 
                     (int)Position.Y, 
-                    texture.Width, 
-                    texture.Height);
+                    _texture.Width, 
+                    _texture.Height);
             }
         }
 
         #region Constructors
         public Sprite(Texture2D texture)
         {
-            this.texture = texture;
+            this._texture = texture;
         }
 
         public Sprite(GraphicsDevice graphicsDevice, int width, int height, Color color)
         {
-            texture = this.CreateTexture(graphicsDevice, width, height, pixel => color);
+            _texture = this.CreateTexture(graphicsDevice, width, height, pixel => color);
             this.Color = color;
         }
         #endregion
@@ -71,39 +71,39 @@ namespace GameEngine.Sprites
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, Position, Color);
+            spriteBatch.Draw(_texture, Position, Color);
         }
 
         #region Movement
         public void MoveLeft()
         {
             System.Diagnostics.Debug.WriteLine("Moving left");
-            this.Velocity.X = -this.Speed;
+            this._velocity.X = -this.Speed;
         }
 
         public void MoveRight()
         {
             System.Diagnostics.Debug.WriteLine("Moving right");
-            this.Velocity.X = this.Speed;
+            this._velocity.X = this.Speed;
         }
 
         public void MoveUp()
         {
             System.Diagnostics.Debug.WriteLine("Moving up");
-            this.Velocity.Y = -this.Speed;
+            this._velocity.Y = -this.Speed;
         }
 
         public void MoveDown()
         {
             System.Diagnostics.Debug.WriteLine("Moving down");
-            this.Velocity.Y = this.Speed;
+            this._velocity.Y = this.Speed;
         }
         #endregion
 
         #region Collision
         protected bool IsTouchingLeft(Sprite sprite)
         {
-            return this.BoundingBox.Right + this.Velocity.X > sprite.BoundingBox.Left &&
+            return this.BoundingBox.Right + this._velocity.X > sprite.BoundingBox.Left &&
                 this.BoundingBox.Left < sprite.BoundingBox.Left &&
                 this.BoundingBox.Bottom > sprite.BoundingBox.Top &&
                 this.BoundingBox.Top < sprite.BoundingBox.Bottom;
@@ -111,7 +111,7 @@ namespace GameEngine.Sprites
 
         protected bool IsTouchingRight(Sprite sprite)
         {
-            return this.BoundingBox.Left + this.Velocity.X < sprite.BoundingBox.Right &&
+            return this.BoundingBox.Left + this._velocity.X < sprite.BoundingBox.Right &&
                 this.BoundingBox.Right > sprite.BoundingBox.Right &&
                 this.BoundingBox.Bottom > sprite.BoundingBox.Top &&
                 this.BoundingBox.Top < sprite.BoundingBox.Bottom;
@@ -119,7 +119,7 @@ namespace GameEngine.Sprites
 
         protected bool IsTouchingTop(Sprite sprite)
         {
-            return this.BoundingBox.Bottom + this.Velocity.Y > sprite.BoundingBox.Top &&
+            return this.BoundingBox.Bottom + this._velocity.Y > sprite.BoundingBox.Top &&
                 this.BoundingBox.Top < sprite.BoundingBox.Top &&
                 this.BoundingBox.Right > sprite.BoundingBox.Left &&
                 this.BoundingBox.Left < sprite.BoundingBox.Right;
@@ -127,7 +127,7 @@ namespace GameEngine.Sprites
 
         protected bool IsTouchingBottom(Sprite sprite)
         {
-            return this.BoundingBox.Top + this.Velocity.Y < sprite.BoundingBox.Bottom &&
+            return this.BoundingBox.Top + this._velocity.Y < sprite.BoundingBox.Bottom &&
                 this.BoundingBox.Bottom > sprite.BoundingBox.Bottom &&
                 this.BoundingBox.Right > sprite.BoundingBox.Left &&
                 this.BoundingBox.Left < sprite.BoundingBox.Right;

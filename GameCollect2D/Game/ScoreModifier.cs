@@ -11,17 +11,17 @@ namespace GameEngine.Sprites
 {
     class ScoreModifier : GameObject
     {
-        int modifier = 1;
+        int _modifier = 1;
 
         public int Modifier
         {
             get
             {
-                return modifier;
+                return _modifier;
             }
             set
             {
-                modifier = value;
+                _modifier = value;
                 SetColor();
             }
         }
@@ -29,18 +29,18 @@ namespace GameEngine.Sprites
         public ScoreModifier(Texture2D texture) : base(texture)
         {
             this.Position = Vector2.Zero;
-            this.tilePosition = Vector2.Zero;
+            this._tilePosition = Vector2.Zero;
         }
 
         public ScoreModifier(Texture2D texture, int modifier) : this(texture)
         {
-            this.modifier = modifier;
+            this._modifier = modifier;
             SetColor();
         }
 
         public ScoreModifier(Texture2D texture, int modifier, Dictionary<String, SoundEffect> sounds) : this(texture, modifier)
         {
-            this.sfx = sounds;
+            this._sfx = sounds;
         }
 
         public override void Update(Viewport viewport, GameTime gameTime, Level level, List<Sprite> sprites)
@@ -50,11 +50,11 @@ namespace GameEngine.Sprites
 
         void SetColor()
         {
-            if (modifier > 0)
+            if (_modifier > 0)
             {
                 this.Color = Color.Green;
             }
-            else if (modifier < 0)
+            else if (_modifier < 0)
             {
                 this.Color = Color.DeepPink;
             }

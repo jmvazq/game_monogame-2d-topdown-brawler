@@ -11,7 +11,7 @@ namespace GameEngine.Sprites
 {
     class GameObject : Sprite
     {
-        protected Vector2 tilePosition;
+        protected Vector2 _tilePosition;
 
         public bool IsDisplaced = true;
 
@@ -19,48 +19,48 @@ namespace GameEngine.Sprites
         {
             get
             {
-                return (int)tilePosition.X;
+                return (int)_tilePosition.X;
             }
             set
             {
-                tilePosition.X = value;
+                _tilePosition.X = value;
             }
         }
         public int Row
         {
             get
             {
-                return (int)tilePosition.Y;
+                return (int)_tilePosition.Y;
             }
             set
             {
-                tilePosition.Y = value;
+                _tilePosition.Y = value;
             }
         }
 
-        protected Dictionary<string, SoundEffect> sfx;
+        protected Dictionary<string, SoundEffect> _sfx;
 
         public GameObject(Texture2D texture) : base(texture)
         {
-            this.IsDisplaced = true;
-            this.Position = Vector2.Zero;
-            this.tilePosition = Vector2.Zero;
-            this.Passability = Passability.passable;
+            IsDisplaced = true;
+            Position = Vector2.Zero;
+            _tilePosition = Vector2.Zero;
+            Passability = Passability.passable;
         }
 
         public GameObject(Texture2D texture, Dictionary<String, SoundEffect> sounds) : base(texture)
         {
-            sfx = sounds;
+            _sfx = sounds;
         }
 
         public GameObject(Texture2D texture, int column, int row) : this(texture)
         {
-            this.tilePosition = new Vector2(column, row);
+            _tilePosition = new Vector2(column, row);
         }
 
         public GameObject(Texture2D texture, int column, int row, Passability passability) : this(texture, column, row)
         {
-            this.Passability = passability;
+            Passability = passability;
         }
 
         public GameObject(GraphicsDevice graphicsDevice, int width, int height, Color color, float speed) : base(graphicsDevice, width, height, color)
@@ -75,7 +75,7 @@ namespace GameEngine.Sprites
 
         public void PlaySound(string sfxName)
         {
-            SoundEffectInstance sound = sfx[sfxName].CreateInstance();
+            SoundEffectInstance sound = _sfx[sfxName].CreateInstance();
             sound.Play();
         }
     }

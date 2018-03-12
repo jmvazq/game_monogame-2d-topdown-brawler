@@ -11,37 +11,37 @@ namespace MyGame
 {
     class Score
     {
-        SpriteFont labelFont;
-        SpriteFont scoreFont;
+        SpriteFont _labelFont;
+        SpriteFont _scoreFont;
 
-        int p1 = 0;
-        int p2 = 0;
+        int _p1 = 0;
+        int _p2 = 0;
 
         public int PlayerOne {
             get
             {
-                return p1;
+                return _p1;
             }
             set
             {
                 if (value < 0)
-                    p1 = 0;
+                    _p1 = 0;
                 else
-                    p1 = value;
+                    _p1 = value;
             }
         }
         public int PlayerTwo
         {
             get
             {
-                return p2;
+                return _p2;
             }
             set
             {
                 if (value < 0)
-                    p2 = 0;
+                    _p2 = 0;
                 else
-                    p2 = value;
+                    _p2 = value;
             }
         }
 
@@ -53,19 +53,19 @@ namespace MyGame
 
         public Score(SpriteFont label, SpriteFont score)
         {
-            this.labelFont = label;
-            this.scoreFont = score;
+            this._labelFont = label;
+            this._scoreFont = score;
         }
 
         public void Draw(Viewport viewport, SpriteBatch spriteBatch)
         {
             // Draw Player 1 score
-            spriteBatch.DrawString(labelFont, "Score", new Vector2(10, viewport.Height - 32), this.LabelColor1);
-            spriteBatch.DrawString(scoreFont, this.p1.ToString(), new Vector2(70,  viewport.Height - 35), this.ScoreColor1);
+            spriteBatch.DrawString(_labelFont, "Score", new Vector2(10, viewport.Height - 32), this.LabelColor1);
+            spriteBatch.DrawString(_scoreFont, this._p1.ToString(), new Vector2(70,  viewport.Height - 35), this.ScoreColor1);
 
             // Draw Player 2 score
-            spriteBatch.DrawString(labelFont, "Score", new Vector2(viewport.Width - 106, viewport.Height - 32), this.LabelColor2);
-            spriteBatch.DrawString(scoreFont, this.p2.ToString(), new Vector2(viewport.Width - 48, viewport.Height - 35), this.ScoreColor2);
+            spriteBatch.DrawString(_labelFont, "Score", new Vector2(viewport.Width - 106, viewport.Height - 32), this.LabelColor2);
+            spriteBatch.DrawString(_scoreFont, this._p2.ToString(), new Vector2(viewport.Width - 48, viewport.Height - 35), this.ScoreColor2);
         }
     }
 }

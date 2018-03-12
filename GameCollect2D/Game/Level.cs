@@ -12,17 +12,17 @@ namespace GameEngine
 {
     class Level
     {
-        int tileLength;
+        int _tileLength;
 
-        int rows = 15;
-        int columns = 20;
+        int _rows = 15;
+        int _columns = 20;
 
-        readonly Tile[,] tileMap;
-        GameObject[,] objMap;
+        readonly Tile[,] _tileMap;
+        GameObject[,] _objMap;
         public GameObject[,] ObjMap {
             get
             {
-                return objMap;
+                return _objMap;
             }
         }
 
@@ -30,39 +30,39 @@ namespace GameEngine
         {
             get
             {
-                return rows;
+                return _rows;
             }
         }
         public int Columns
         {
             get
             {
-                return columns;
+                return _columns;
             }
         }
 
         public Level(Texture2D baseTexture, int columns, int rows, int tileLength)
         {
-            this.rows = rows;
-            this.columns = columns;
-            this.tileLength = tileLength;
-            this.tileMap = new Tile[this.columns, this.rows];
-            this.objMap = new GameObject[this.columns, this.rows];
+            this._rows = rows;
+            this._columns = columns;
+            this._tileLength = tileLength;
+            this._tileMap = new Tile[this._columns, this._rows];
+            this._objMap = new GameObject[this._columns, this._rows];
 
             for (int x = 0; x < columns; x++)
             {
                 for (int y = 0; y < rows; y++)
                 {
-                    Vector2 tilePosition = new Vector2(x * this.tileLength, y * tileLength);
-                    tileMap[x, y] = new Tile(baseTexture, tilePosition, Passability.passable);
+                    Vector2 tilePosition = new Vector2(x * this._tileLength, y * tileLength);
+                    _tileMap[x, y] = new Tile(baseTexture, tilePosition, Passability.passable);
                 }
             }
         }
 
         public void SetTile(int column, int row, Tile tile)
         {
-            tile.Position = new Vector2(column * this.tileLength, row * tileLength);
-            this.tileMap[column, row] = tile;
+            tile.Position = new Vector2(column * this._tileLength, row * _tileLength);
+            this._tileMap[column, row] = tile;
         }
 
         public void FillTileRange(int startColumn, int startRow, int endColumn, int endRow, Texture2D texture)
@@ -78,7 +78,7 @@ namespace GameEngine
 
         public void SetObject(int column, int row, GameObject sprite, Passability passability = Passability.block)
         {
-            sprite.Position = new Vector2(column * this.tileLength, row * tileLength);
+            sprite.Position = new Vector2(column * this._tileLength, row * _tileLength);
             sprite.Column = column;
             sprite.Row = row;
             sprite.IsDisplaced = false;
@@ -113,7 +113,7 @@ namespace GameEngine
                     sprites.Add(obj);
             }
 
-            foreach (Tile tile in this.tileMap)
+            foreach (Tile tile in this._tileMap)
             {
                 tile.Update(gameTime, sprites);
             }
@@ -128,7 +128,7 @@ namespace GameEngine
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            foreach (var tile in this.tileMap)
+            foreach (var tile in this._tileMap)
             {
                 tile.Draw(spriteBatch);
             }

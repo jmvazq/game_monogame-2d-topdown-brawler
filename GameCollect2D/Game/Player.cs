@@ -15,30 +15,30 @@ namespace GameEngine.Sprites
         public string Name;
         public int Lives;
 
-        int score;
+        int _score;
         public int Score {
             set
             {
                 if (value < 0)
-                    score = 0;
+                    _score = 0;
                 else
-                    score = value;
+                    _score = value;
             }
             get
             {
-                return score;
+                return _score;
             }
         }
 
-        protected double lastCollisionTime = 0;
-        protected double lastJumpTime = 0;
-        double lastUpdateTime = 0;
-        double updateTimer = 0;
+        protected double _lastCollisionTime = 0;
+        protected double _lastJumpTime = 0;
+        double _lastUpdateTime = 0;
+        double _updateTimer = 0;
 
-        Vector2 jumpStartPosition = Vector2.Zero;
+        Vector2 _jumpStartPosition = Vector2.Zero;
 
-        GamePadState previousGpState;
-        KeyboardState previousKbState;
+        GamePadState _previousGpState;
+        KeyboardState _previousKbState;
 
         public enum State
         {
@@ -92,25 +92,25 @@ namespace GameEngine.Sprites
             double totalSeconds = gameTime.TotalGameTime.TotalSeconds;
             double elapsedSeconds = gameTime.ElapsedGameTime.TotalSeconds;
 
-            updateTimer += elapsedSeconds;
+            _updateTimer += elapsedSeconds;
 
             if (this.state == State.Dead)
                 return;
 
             bool canCollision = false;
             // We don't want to check for collisions on every frame... otherwise it looks weird
-            if (totalSeconds - lastCollisionTime > 0.25d || this.state == State.Dodging)
+            if (totalSeconds - _lastCollisionTime > 0.25d || this.state == State.Dodging)
             {
                 canCollision = true;
                 if (this.state != State.Dead && this.state != State.Dodging)
                     this.state = State.Standing;
             }
 
-            if (this.state != State.Bouncing && updateTimer > 0.03d)
+            if (this.state != State.Bouncing && _updateTimer > 0.03d)
             {
                 Move(gpState, kbState);
                 Jump(totalSeconds, gpState, kbState);
-                updateTimer = 0;
+                _updateTimer = 0;
             }
 
             CheckScreenBoundaries(viewport);
@@ -123,13 +123,13 @@ namespace GameEngine.Sprites
             GetCollectables(gameTime, level, sprites);
 
             // Update position and reset velocity
-            this.Position += this.Velocity;
+            this.Position += this._velocity;
 
-            this.Velocity = Vector2.Zero;
+            this._velocity = Vector2.Zero;
 
-            lastUpdateTime = gameTime.TotalGameTime.TotalSeconds;
-            previousGpState = gpState;
-            previousKbState = kbState;
+            _lastUpdateTime = gameTime.TotalGameTime.TotalSeconds;
+            _previousGpState = gpState;
+            _previousKbState = kbState;
 
             base.Update(viewport, gameTime, level, sprites);
         }
@@ -173,8 +173,8 @@ namespace GameEngine.Sprites
                         float collisionVelocity = 0;
 
                         if (
-                            (this.Velocity.X > 0 && this.IsTouchingLeft(sprite)) || 
-                            (this.Velocity.X < 0 && this.IsTouchingRight(sprite))
+                            (this._velocity.X > 0 && this.IsTouchingLeft(sprite)) || 
+                            (this._velocity.X < 0 && this.IsTouchingRight(sprite))
                         )
                         {
                             // Collision occurred on X-axis
@@ -183,8 +183,8 @@ namespace GameEngine.Sprites
                             collided = true;
                         }
                         if (
-                            (this.Velocity.Y > 0 && this.IsTouchingTop(sprite)) || 
-                            (this.Velocity.Y < 0 && this.IsTouchingBottom(sprite))
+                            (this._velocity.Y > 0 && this.IsTouchingTop(sprite)) || 
+                            (this._velocity.Y < 0 && this.IsTouchingBottom(sprite))
                         )
                         {
                             // Collision occurred on Y-axis
@@ -199,9 +199,9 @@ namespace GameEngine.Sprites
                             {
                                 collisionVelocity = -2;
 
-                                if (((Player)sprite).state != State.Dodging && this.lastCollisionTime > ((Player)sprite).lastCollisionTime)
+                                if (((Player)sprite).state != State.Dodging && this._lastCollisionTime > ((Player)sprite)._lastCollisionTime)
                                 {
-                                    SoundEffectInstance sfxHit = this.sfx["hit"].CreateInstance();
+                                    SoundEffectInstance sfxHit = this._sfx["hit"].CreateInstance();
                                     sfxHit.Play();
                                     this.Score += 1;
                                 }
@@ -212,10 +212,10 @@ namespace GameEngine.Sprites
                                 // Play different sound
                             }
 
-                            this.Velocity.X *= collisionVelocity * xCollision;
-                            this.Velocity.Y *= collisionVelocity * yCollision;
+                            this._velocity.X *= collisionVelocity * xCollision;
+                            this._velocity.Y *= collisionVelocity * yCollision;
 
-                            lastCollisionTime = gameTime.TotalGameTime.TotalSeconds;
+                            _lastCollisionTime = gameTime.TotalGameTime.TotalSeconds;
                         }
                     }
                 }
@@ -235,16 +235,16 @@ namespace GameEngine.Sprites
                         bool pickup = false;
 
                         if (
-                            (this.Velocity.X > 0 && this.IsTouchingLeft(sprite)) ||
-                            (this.Velocity.X < 0 && this.IsTouchingRight(sprite))
+                            (this._velocity.X > 0 && this.IsTouchingLeft(sprite)) ||
+                            (this._velocity.X < 0 && this.IsTouchingRight(sprite))
                         )
                         {
                             // Collision occurred on X-axis
                             pickup = true;
                         }
                         if (
-                            (this.Velocity.Y > 0 && this.IsTouchingTop(sprite)) ||
-                            (this.Velocity.Y < 0 && this.IsTouchingBottom(sprite))
+                            (this._velocity.Y > 0 && this.IsTouchingTop(sprite)) ||
+                            (this._velocity.Y < 0 && this.IsTouchingBottom(sprite))
                         )
                         {
                             // Collision occurred on Y-axis
@@ -310,22 +310,22 @@ namespace GameEngine.Sprites
             }
             else if (this.state == State.Dodging)
             {
-                if (totalSeconds - this.lastJumpTime > 0.20d)
+                if (totalSeconds - this._lastJumpTime > 0.20d)
                 {
-                    this.Position = this.jumpStartPosition;
+                    this.Position = this._jumpStartPosition;
                     this.state = State.Standing;
-                    this.lastJumpTime = 0;
+                    this._lastJumpTime = 0;
                 }
             }
 
             if (startJump)
             {
                 this.state = State.Dodging;
-                SoundEffectInstance sfxDodge = this.sfx["jump"].CreateInstance();
+                SoundEffectInstance sfxDodge = this._sfx["jump"].CreateInstance();
                 sfxDodge.Play();
-                this.jumpStartPosition = this.Position;
-                this.Velocity = new Vector2(0, -this.Speed*0.5f);
-                this.lastJumpTime = totalSeconds;
+                this._jumpStartPosition = this.Position;
+                this._velocity = new Vector2(0, -this.Speed*0.5f);
+                this._lastJumpTime = totalSeconds;
                 System.Diagnostics.Debug.WriteLine(this.Name + " jumped.");
             }
         }
