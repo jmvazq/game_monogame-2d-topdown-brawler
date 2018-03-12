@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using GameEngine.Models;
 using GameEngine.Sprites;
 
@@ -104,7 +105,7 @@ namespace GameEngine
             this.ObjMap[column, row] = null;
         }
 
-        public void Update(Viewport viewport, GameTime gameTime, Level level)
+        public void Update(Game game, Camera2D camera, Viewport viewport, GameTime gameTime, Level level)
         {
             List<Sprite> sprites = new List<Sprite>();
             foreach (Sprite obj in ObjMap)
@@ -121,7 +122,7 @@ namespace GameEngine
             {
                 if (obj != null)
                 {
-                    obj.Update(viewport, gameTime, level, sprites);
+                    obj.Update(game, camera, viewport, gameTime, level, sprites);
                 }
             }
         }

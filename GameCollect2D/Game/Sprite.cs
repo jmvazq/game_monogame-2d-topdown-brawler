@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using GameEngine.Models;
 
 namespace GameEngine.Sprites
@@ -62,6 +63,11 @@ namespace GameEngine.Sprites
 
         public virtual void Update(GameTime gameTime, List<Sprite> sprites)
         {
+        }
+
+        public virtual void Update(Game game, Camera2D camera, Viewport viewport, GameTime gameTime, Level level, List<Sprite> sprites)
+        {
+            this.Update(gameTime, sprites);
         }
 
         public virtual void Update(Viewport viewport, GameTime gameTime, Level level, List<Sprite> sprites)

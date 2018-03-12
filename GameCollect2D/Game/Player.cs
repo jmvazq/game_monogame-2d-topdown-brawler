@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
 
 namespace GameEngine.Sprites
 {
@@ -84,7 +85,7 @@ namespace GameEngine.Sprites
             this.Score = 0;
         }
 
-        public override void Update(Viewport viewport, GameTime gameTime, Level level, List<Sprite> sprites)
+        public override void Update(Game game, Camera2D camera, Viewport viewport, GameTime gameTime, Level level, List<Sprite> sprites)
         {
             GamePadState gpState = GamePad.GetState(this.PlayerIndex);
             KeyboardState kbState = Keyboard.GetState();
@@ -113,7 +114,7 @@ namespace GameEngine.Sprites
                 _updateTimer = 0;
             }
 
-            CheckScreenBoundaries(viewport);
+            CheckScreenBoundaries(camera);
 
             if (canCollision)
             {
@@ -134,24 +135,24 @@ namespace GameEngine.Sprites
             base.Update(viewport, gameTime, level, sprites);
         }
 
-        private void CheckScreenBoundaries(Viewport viewport)
+        private void CheckScreenBoundaries(Camera2D camera)
         {
             // Check for screen boundaries and update position accordingly
-            if (this.BoundingBox.Right + this.Velocity.X > viewport.Width)
+            if (this.BoundingBox.Right + this._velocity.X > camera.BoundingRectangle.Width)
             {
                 this.Position.X = 0;
             }
-            else if (this.BoundingBox.Left + this.Velocity.X < 0)
+            else if (this.BoundingBox.Left + this._velocity.X < 0)
             {
-                this.Position.X = viewport.Bounds.Right - this.Speed;
+                this.Position.X = camera.BoundingRectangle.Right - this.Speed;
             }
-            if (this.BoundingBox.Bottom + this.Velocity.Y > viewport.Height)
+            if (this.BoundingBox.Bottom + this._velocity.Y > camera.BoundingRectangle.Height)
             {
                 this.Position.Y = 0;
             }
-            else if (this.BoundingBox.Top + this.Velocity.Y < 0)
+            else if (this.BoundingBox.Top + this._velocity.Y < 0)
             {
-                this.Position.Y = viewport.Bounds.Bottom - this.Speed;
+                this.Position.Y = camera.BoundingRectangle.Bottom - this.Speed;
             }
         }
 
